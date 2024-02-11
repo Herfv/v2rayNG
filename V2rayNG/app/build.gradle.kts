@@ -23,7 +23,7 @@ android {
 
     if (System.getenv("KEYSTORE_PATH") != null) {
         signingConfigs {
-        create("release") {
+        create("releaseConfig") {
             if (System.getenv("KEYSTORE_PATH") != null) {
                 storeFile = file(System.getenv("KEYSTORE_PATH"))
                 storePassword = System.getenv("KEYSTORE_PASSWORD")
@@ -31,7 +31,7 @@ android {
                 keyPassword = System.getenv("KEY_PASSWORD")
             }
         }
-        create("debug") {
+        create("debugConfig") {
             if (System.getenv("KEYSTORE_PATH") != null) {
                 storeFile = file(System.getenv("KEYSTORE_PATH"))
                 storePassword = System.getenv("KEYSTORE_PASSWORD")
@@ -45,11 +45,11 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.findByName("release")
+            signingConfig = signingConfigs.findByName("releaseConfig")
         }
         debug {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.findByName("debug")
+            signingConfig = signingConfigs.findByName("debugConfig")
         }
     }
 
