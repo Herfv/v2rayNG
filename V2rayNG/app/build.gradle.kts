@@ -23,37 +23,33 @@ android {
 
     if (System.getenv("KEYSTORE_PATH") != null) {
         signingConfigs {
-            create("release") {
+        create("release") {
+            if (System.getenv("KEYSTORE_PATH") != null) {
                 storeFile = file(System.getenv("KEYSTORE_PATH"))
                 storePassword = System.getenv("KEYSTORE_PASSWORD")
                 keyAlias = System.getenv("KEY_ALIAS")
                 keyPassword = System.getenv("KEY_PASSWORD")
-                v1SigningEnabled = true
-                v2SigningEnabled = true
-            }
-            create("debug") {
-                storeFile = file(System.getenv("KEYSTORE_PATH"))
-                storePassword = System.getenv("KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("KEY_ALIAS")
-                keyPassword = System.getenv("KEY_PASSWORD")
-                v1SigningEnabled = true
-                v2SigningEnabled = true
             }
         }
+        create("debug") {
+            if (System.getenv("KEYSTORE_PATH") != null) {
+                storeFile = file(System.getenv("KEYSTORE_PATH"))
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+            }
+        }
+    }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            if (System.getenv("KEYSTORE_PATH") != null) {
-                signingConfig = signingConfigs.release
-            }
+            signingConfig = signingConfigs.findByName("release")
         }
         debug {
             isMinifyEnabled = false
-            if (System.getenv("KEYSTORE_PATH") != null) {
-                signingConfig = signingConfigs.debug
-            }
+            signingConfig = signingConfigs.findByName("debug")
         }
     }
 
