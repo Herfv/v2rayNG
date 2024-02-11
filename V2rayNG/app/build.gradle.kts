@@ -16,45 +16,44 @@ android {
         multiDexEnabled = true
     }
 
-    if (System.getenv("KEYSTORE_PATH") != null) {
-        signingConfigs {
-            release {
-                storeFile file(System.getenv("KEYSTORE_PATH"))
-                storePassword System.getenv("KEYSTORE_PASSWORD")
-                keyAlias System.getenv("KEY_ALIAS")
-                keyPassword System.getenv("KEY_PASSWORD")
-                v1SigningEnabled true
-                v2SigningEnabled true
-            }
-            debug {
-                storeFile file(System.getenv("KEYSTORE_PATH"))
-                storePassword System.getenv("KEYSTORE_PASSWORD")
-                keyAlias System.getenv("KEY_ALIAS")
-                keyPassword System.getenv("KEY_PASSWORD")
-                v1SigningEnabled true
-                v2SigningEnabled true
-            }
-        }
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    if (System.getenv("KEYSTORE_PATH") != null) {
+        signingConfigs {
+            create("release") {
+                storeFile = file(System.getenv("KEYSTORE_PATH"))
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+                v1SigningEnabled = true
+                v2SigningEnabled = true
+            }
+            create("debug") {
+                storeFile = file(System.getenv("KEYSTORE_PATH"))
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+                v1SigningEnabled = true
+                v2SigningEnabled = true
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
             if (System.getenv("KEYSTORE_PATH") != null) {
-                signingConfig signingConfigs.release
+                signingConfig = signingConfigs.release
             }
-
         }
         debug {
             isMinifyEnabled = false
             if (System.getenv("KEYSTORE_PATH") != null) {
-                signingConfig signingConfigs.release
+                signingConfig = signingConfigs.debug
             }
-
         }
     }
 
