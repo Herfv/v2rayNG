@@ -23,33 +23,37 @@ android {
 
     if (System.getenv("KEYSTORE_PATH") != null) {
         signingConfigs {
-        create("releaseConfig") {
-            if (System.getenv("KEYSTORE_PATH") != null) {
-                storeFile = file(System.getenv("KEYSTORE_PATH"))
-                storePassword = System.getenv("KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("KEY_ALIAS")
-                keyPassword = System.getenv("KEY_PASSWORD")
+            create("releaseConfig") {
+                if (System.getenv("KEYSTORE_PATH") != null) {
+                    storeFile = file(System.getenv("KEYSTORE_PATH"))
+                    storePassword = System.getenv("KEYSTORE_PASSWORD")
+                    keyAlias = System.getenv("KEY_ALIAS")
+                    keyPassword = System.getenv("KEY_PASSWORD")
+                }
+            }
+            create("debugConfig") {
+                if (System.getenv("KEYSTORE_PATH") != null) {
+                    storeFile = file(System.getenv("KEYSTORE_PATH"))
+                    storePassword = System.getenv("KEYSTORE_PASSWORD")
+                    keyAlias = System.getenv("KEY_ALIAS")
+                    keyPassword = System.getenv("KEY_PASSWORD")
+                }    
             }
         }
-        create("debugConfig") {
-            if (System.getenv("KEYSTORE_PATH") != null) {
-                storeFile = file(System.getenv("KEYSTORE_PATH"))
-                storePassword = System.getenv("KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("KEY_ALIAS")
-                keyPassword = System.getenv("KEY_PASSWORD")
-            }
-        }
-    }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.findByName("releaseConfig")
+            if (System.getenv("KEYSTORE_PATH") != null) {
+                signingConfig = signingConfigs.findByName("releaseConfig")
+            }
         }
         debug {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.findByName("debugConfig")
+            if (System.getenv("KEYSTORE_PATH") != null) {
+                signingConfig = signingConfigs.findByName("debugConfig")
+            }
         }
     }
 
