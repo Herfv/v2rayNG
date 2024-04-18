@@ -85,6 +85,7 @@
     <string name="title_user_asset_add_url">Добавить URL ресурса</string>
     <string name="msg_file_not_found">Файл не найден</string>
     <string name="msg_remark_is_duplicate">Описание уже существует</string>
+    <string name="toast_action_not_allowed">Это действие запрещено</string>
 
     <!-- PerAppProxyActivity -->
     <string name="msg_dialog_progress">Загрузка…</string>
@@ -175,9 +176,9 @@
     <string name="title_about">О приложении</string>
     <string name="title_source_code">Исходный код</string>
     <string name="title_tg_channel">Telegram-канал</string>
-    <string name="title_configuration_backup">Backup configuration</string>
-    <string name="summary_configuration_backup">Storage location: [%s], The backup will be cleared after uninstalling the app or clearing the storage</string>
-    <string name="title_configuration_restore">Restore configuration</string>
+    <string name="title_configuration_backup">Резервирование</string>
+    <string name="summary_configuration_backup">Путь: [%s]. Резервная копия будет стёрта при удалении приложения или очистке хранилища.</string>
+    <string name="title_configuration_restore">Восстановление</string>
 
     <string name="title_pref_promotion">Содействие</string>
     <string name="summary_pref_promotion">Содействие, нажмите для получения подробной информации (пожертвование может быть удалено)</string>
