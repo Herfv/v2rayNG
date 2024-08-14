@@ -1,0 +1,61 @@
+name: release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+  #pull_request:
+    #branches:
+      #- master
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Java JDK
+      uses: actions/setup-java@v3.12.0
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Setup Android NDK
+      uses: nttld/setup-ndk@v1.2.0
+      id: setup-ndk
+      with:
+        ndk-version: r26b
+        add-to-path: false
+    
+    - name: Build Release
+      env:
+        KEYSTORE_PATH: "../key.jks"
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      run: |
+        cd V2rayNG/app/libs
+        rm -f libv2ray.aar
+        wget -O libv2ray.aar https://github.com/Herfv/AndroidLibXrayLite/releases/download/release/libv2ray.aar
+        cd ../..
+        sed -i 's/org.gradle.jvmargs=-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8/org.gradle.jvmargs=-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8/' ${{ github.workspace }}/V2rayNG/gradle.properties
+        chmod +x ./gradlew
+        echo "ndk.dir=${ANDROID_NDK_HOME}" >> local.properties
+        ./gradlew assembleRelease
+    
+    - uses: actions/upload-artifact@v3.1.1
+      with:
+        name: APKs
+        path: /home/runner/work/v2rayNG/v2rayNG/V2rayNG/app/build/outputs/apk/release/*.apk
+
+    - name: Upload apk to release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag: ${{ github.ref_name }}
+        tag_name: release
+        files: /home/runner/work/v2rayNG/v2rayNG/V2rayNG/app/build/outputs/apk/release/*.apk
