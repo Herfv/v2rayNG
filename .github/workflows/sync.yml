@@ -1,0 +1,19 @@
+name: Sync Fork
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '26 4 * * *'
+
+jobs:
+  sync:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: tgymnich/fork-sync@v1.2.1
+        with:
+          github_token: ${{ secrets.WCUHESZN_TOKEN }}
+          owner: 2dust
+          base: master
+          head: master
