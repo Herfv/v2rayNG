@@ -38,6 +38,19 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    if (System.getenv("KEYSTORE_PATH") != null) {
+        signingConfigs {
+            create("releaseConfig") {
+                if (System.getenv("KEYSTORE_PATH") != null) {
+                    storeFile = file(System.getenv("KEYSTORE_PATH"))
+                    storePassword = System.getenv("KEYSTORE_PASSWORD")
+                    keyAlias = System.getenv("KEY_ALIAS")
+                    keyPassword = System.getenv("KEY_PASSWORD")
+                }
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -45,6 +58,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            if (System.getenv("KEYSTORE_PATH") != null) {
+                signingConfig = signingConfigs.findByName("releaseConfig")
+            }
         }
     }
 
