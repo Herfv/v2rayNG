@@ -16,8 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Checkout
-      uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v4.2.2
+      with:
+        submodules: 'recursive'
+        fetch-depth: '0'
 
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3.2.0
@@ -58,6 +61,12 @@ jobs:
     - name: Copy libtun2socks
       run: |
         cp -r ${{ github.workspace }}/libs ${{ github.workspace }}/V2rayNG/app
+
+    - name: Setup Java
+      uses: actions/setup-java@v4.7.0
+      with:
+        distribution: 'temurin'
+        java-version: '21'
     
     - name: Build Release
       env:
