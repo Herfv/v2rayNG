@@ -19,18 +19,22 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Setup Java JDK
-      uses: actions/setup-java@v3.12.0
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3.2.0
       with:
-        java-version: '17'
-        distribution: 'temurin'
-    
-    - name: Setup Android NDK
-      uses: nttld/setup-ndk@v1.2.0
-      id: setup-ndk
-      with:
-        ndk-version: r26b
-        add-to-path: false
+        log-accepted-android-sdk-licenses: false
+        cmdline-tools-version: '12266719'
+        packages: 'platforms;android-35 build-tools;35.0.0 platform-tools'
+
+    - name: Install NDK
+      run: |
+        echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
+          --channel=3 \
+          --install "ndk;29.0.13113456"
+        echo "NDK_HOME=$ANDROID_HOME/ndk/29.0.13113456" >> $GITHUB_ENV
+        sed -i '10i\
+        \
+            ndkVersion = "29.0.13113456"' ${{ github.workspace }}/V2rayNG/app/build.gradle.kts
     
     - name: Build Release
       env:
@@ -39,6 +43,7 @@ jobs:
         KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       run: |
+        mkdir V2rayNG/app/libs
         cd V2rayNG/app/libs
         rm -f libv2ray.aar
         wget -O libv2ray.aar https://github.com/Herfv/AndroidLibXrayLite/releases/download/release/libv2ray.aar
