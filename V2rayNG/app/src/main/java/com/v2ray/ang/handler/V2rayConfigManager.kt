@@ -97,7 +97,7 @@ object V2rayConfigManager {
         val result = ConfigResult(false)
 
         val address = config.server ?: return result
-        if (!Utils.isIpAddress(address)) {
+        if (!Utils.isPureIpAddress(address)) {
             if (!Utils.isValidUrl(address)) {
                 Log.w(AppConfig.TAG, "$address is an invalid ip or domain")
                 return result
@@ -131,7 +131,10 @@ object V2rayConfigManager {
             v2rayConfig.policy = null
         }
 
-        resolveOutboundDomainsToHosts(v2rayConfig)
+        //Resolve and add to DNS Hosts
+        if (MmkvManager.decodeSettingsString(AppConfig.PREF_OUTBOUND_DOMAIN_RESOLVE_METHOD, "1") == "1") {
+            resolveOutboundDomainsToHosts(v2rayConfig)
+        }
 
         result.status = true
         result.content = JsonUtil.toJsonPretty(v2rayConfig) ?: ""
@@ -151,7 +154,7 @@ object V2rayConfigManager {
         val result = ConfigResult(false)
 
         val address = config.server ?: return result
-        if (!Utils.isIpAddress(address)) {
+        if (!Utils.isPureIpAddress(address)) {
             if (!Utils.isValidUrl(address)) {
                 Log.w(AppConfig.TAG, "$address is an invalid ip or domain")
                 return result
@@ -1049,7 +1052,15 @@ object V2rayConfigManager {
     fun populateTlsSettings(streamSettings: StreamSettingsBean, profileItem: ProfileItem, sniExt: String?) {
         val streamSecurity = profileItem.security.orEmpty()
         val allowInsecure = profileItem.insecure == true
-        val sni = if (profileItem.sni.isNullOrEmpty()) sniExt else profileItem.sni
+        val sni = if (profileItem.sni.isNullOrEmpty()) {
+            when {
+                sniExt.isNotNullEmpty() && Utils.isDomainName(sniExt) -> sniExt
+                profileItem.server.isNotNullEmpty() && Utils.isDomainName(profileItem.server) -> profileItem.server
+                else -> sniExt
+            }
+        } else {
+            profileItem.sni
+        }
         val fingerprint = profileItem.fingerPrint
         val alpns = profileItem.alpn
         val publicKey = profileItem.publicKey
