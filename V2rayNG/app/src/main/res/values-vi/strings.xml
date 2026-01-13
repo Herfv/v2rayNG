@@ -131,6 +131,7 @@
     <string name="msg_dialog_progress">Đang tải...</string>
     <string name="menu_item_search">Tìm kiếm</string>
     <string name="menu_item_select_all">Chọn tất cả</string>
+    <string name="menu_item_invert_selection">Đảo chọn</string>
     <string name="msg_enter_keywords">Nhập từ khoá</string>
     <string name="switch_bypass_apps_mode">Chế độ Bypass</string>
     <string name="menu_item_select_proxy_app">Tự động chọn ứng dụng Proxy</string>
@@ -257,8 +258,8 @@
     <string name="title_language">Ngôn ngữ</string>
     <string name="title_ui_settings">Cài đặt UI</string>
     <string name="title_pref_ui_mode_night">Cài đặt chế độ UI</string>
-    <string name="title_pref_use_hev_tunnel">Enable New TUN Feature</string>
-    <string name="summary_pref_use_hev_tunnel">When enabled, TUN will use hev-socks5-tunnel; otherwise, it will use badvpn-tun2socks.</string>
+    <string name="title_pref_use_hev_tunnel">Enable Hev TUN Feature</string>
+    <string name="summary_pref_use_hev_tunnel">When enabled, TUN will use hev-socks5-tunnel; otherwise, it will use xray-core.</string>
     <string name="title_pref_hev_tunnel_loglevel">Hev Tun Log Level</string>
     <string name="title_pref_hev_tunnel_rw_timeout">Hev Tun read/write timeout (seconds) (tcp,udp default 300,60)</string>
 
@@ -287,7 +288,7 @@
     <string name="title_user_asset_setting">Asset files</string>
     <string name="title_sort_by_test_results">Sắp xếp lại theo lần kiểm tra cuối cùng</string>
     <string name="title_filter_config">Lọc cấu hình theo các gói đăng ký</string>
-    <string name="filter_config_all">Hiển thị tất cả các gói đăng ký</string>
+    <string name="filter_config_all">All</string>
     <string name="title_del_duplicate_config_count">Xoá %d cấu hình trùng lặp</string>
 
     <string name="title_del_config_count">Delete %d configurations</string>

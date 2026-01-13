@@ -131,6 +131,7 @@
     <string name="msg_dialog_progress">載入</string>
     <string name="menu_item_search">搜尋</string>
     <string name="menu_item_select_all">全選</string>
+    <string name="menu_item_invert_selection">反選</string>
     <string name="msg_enter_keywords">輸入關鍵字</string>
     <string name="switch_bypass_apps_mode">略過模式</string>
     <string name="menu_item_select_proxy_app">自動選中需代理的應用</string>
@@ -255,8 +256,8 @@
     <string name="title_language">語言</string>
     <string name="title_ui_settings">介面顏色設定</string>
     <string name="title_pref_ui_mode_night">介面顯示模式</string>
-    <string name="title_pref_use_hev_tunnel">啟用新 TUN 功能</string>
-    <string name="summary_pref_use_hev_tunnel">選擇啟用後，TUN 將使用 hev-socks5-tunnel，否則使用 badvpn-tun2socks。</string>
+    <string name="title_pref_use_hev_tunnel">啟用 Hev TUN 功能</string>
+    <string name="summary_pref_use_hev_tunnel">選擇啟用後 TUN 將使用 hev-socks5-tunnel 否則使用 xray-core</string>
     <string name="title_pref_hev_tunnel_loglevel">HevTun 日誌級別</string>
     <string name="title_pref_hev_tunnel_rw_timeout">HevTun 讀寫逾時(秒) (tcp,udp 預設 300,60)</string>
 
@@ -285,7 +286,7 @@
     <string name="title_user_asset_setting">資源檔案</string>
     <string name="title_sort_by_test_results">依偵測結果排序</string>
     <string name="title_filter_config">過濾設定</string>
-    <string name="filter_config_all">所有分組</string>
+    <string name="filter_config_all">所有</string>
     <string name="title_del_duplicate_config_count">刪除 %d 個重複配置</string>
     <string name="title_del_config_count">刪除 %d 個配置</string>
     <string name="title_import_config_count">匯入 %d 個配置</string>

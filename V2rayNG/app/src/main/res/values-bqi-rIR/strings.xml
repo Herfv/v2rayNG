@@ -133,7 +133,8 @@
     <string name="msg_dialog_progress">هونی بار ونی بۊ</string>
     <string name="menu_item_search">پیتینیڌن</string>
     <string name="menu_item_select_all">پسند پوی</string>
-    <string name="msg_enter_keywords">رزما ن بزنین</string>
+    <string name="menu_item_invert_selection">Invert selection</string>
+    <string name="msg_enter_keywords">کلمه کلیدی را وارد کنید</string>
     <string name="switch_bypass_apps_mode">هالت Bypass</string>
     <string name="menu_item_select_proxy_app">پسند خوتکار پروکسی برنومه</string>
     <string name="msg_downloading_content">موئتوا هونی دانلود ابۊن</string>
@@ -257,8 +258,8 @@
     <string name="title_language">زووݩ</string>
     <string name="title_ui_settings">سامووا رابت منتوری</string>
     <string name="title_pref_ui_mode_night">سامووا هالت رابت منتوری</string>
-    <string name="title_pref_use_hev_tunnel">فعال کردن ویژیی نۊ TUN</string>
-    <string name="summary_pref_use_hev_tunnel">ٱر ک فعال بۊ، TUN ایا hev-socks5-tunnel ن و کار اگره؛ ٱندی ز badvpn-tun2socks.</string>
+    <string name="title_pref_use_hev_tunnel">Enable Hev TUN Feature</string>
+    <string name="summary_pref_use_hev_tunnel">When enabled, TUN will use hev-socks5-tunnel; otherwise, it will use xray-core.</string>
     <string name="title_pref_hev_tunnel_loglevel">Hev Tun سئت گوزارشا</string>
     <string name="title_pref_hev_tunnel_rw_timeout">زمووݩ مندیر بیڌن خوندن/هؽل کردن Hev Tun (سانیه) (پؽش فرز tcp,udp 300،60)</string>
 
@@ -331,7 +332,7 @@
     <string name="connection_not_connected">منپیز نؽڌ</string>
     <string name="connection_runing_task_left">تعداد وزیفه یل آزمایشی ک ر اۊفتانه: %s</string>
 
-    <string name="import_subscription_success">اشتراک وا مووفقیت زفت زابی</string>
+    <string name="import_subscription_success">اشتراک وا موفقیت زفت زابی</string>
     <string name="import_subscription_failure">اشتراک زفت نوابی</string>
     <string name="title_fragment_settings">سامووا فرگمنت</string>
     <string name="title_pref_fragment_packets">کتنا فرگمنت</string>

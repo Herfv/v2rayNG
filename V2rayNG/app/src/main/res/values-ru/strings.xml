@@ -133,7 +133,8 @@
     <string name="msg_dialog_progress">Загрузка…</string>
     <string name="menu_item_search">Поиск</string>
     <string name="menu_item_select_all">Выбрать все</string>
-    <string name="msg_enter_keywords">Введите ключевые слова</string>
+    <string name="menu_item_invert_selection">Invert selection</string>
+    <string name="msg_enter_keywords">Введите ключевое слово</string>
     <string name="switch_bypass_apps_mode">Режим обхода</string>
     <string name="menu_item_select_proxy_app">Автовыбор приложений</string>
     <string name="msg_downloading_content">Загрузка данных</string>
@@ -256,8 +257,8 @@
     <string name="title_language">Язык</string>
     <string name="title_ui_settings">Настройки интерфейса</string>
     <string name="title_pref_ui_mode_night">Тема интерфейса</string>
-    <string name="title_pref_use_hev_tunnel">Использовать новую версию TUN</string>
-    <string name="summary_pref_use_hev_tunnel">Если включено, TUN будет использовать hev-socks5-tunnel, иначе будет использоваться badvpn-tun2socks</string>
+    <string name="title_pref_use_hev_tunnel">Enable Hev TUN Feature</string>
+    <string name="summary_pref_use_hev_tunnel">When enabled, TUN will use hev-socks5-tunnel; otherwise, it will use xray-core.</string>
     <string name="title_pref_hev_tunnel_loglevel">Подробность журнала HevTun</string>
     <string name="title_pref_hev_tunnel_rw_timeout">Ожидание чтения/записи HevTun (секунд, по умолчанию TCP,UDP 300,60)</string>
 
@@ -286,7 +287,7 @@
     <string name="title_user_asset_setting">Файлы ресурсов</string>
     <string name="title_sort_by_test_results">Сортировать по результатам теста</string>
     <string name="title_filter_config">Фильтр профилей</string>
-    <string name="filter_config_all">Все группы</string>
+    <string name="filter_config_all">All</string>
     <string name="title_del_duplicate_config_count">Удалено дубликатов профилей: %d</string>
     <string name="title_del_config_count">Удалено профилей: %d</string>
     <string name="title_import_config_count">Импортировано профилей: %d</string>
