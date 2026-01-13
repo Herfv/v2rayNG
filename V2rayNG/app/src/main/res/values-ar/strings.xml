@@ -134,6 +134,7 @@
     <string name="msg_dialog_progress">جار التحميل</string>
     <string name="menu_item_search">بحث</string>
     <string name="menu_item_select_all">تحديد الكل</string>
+    <string name="menu_item_invert_selection">عكس الاختيار</string>
     <string name="msg_enter_keywords">أدخل الكلمات الرئيسية</string>
     <string name="switch_bypass_apps_mode">وضع التجاوز</string>
     <string name="menu_item_select_proxy_app">تحديد تطبيق الوكيل تلقائيًا</string>
@@ -257,8 +258,8 @@
     <string name="title_language">اللغة</string>
     <string name="title_ui_settings">إعدادات واجهة المستخدم</string>
     <string name="title_pref_ui_mode_night">إعدادات وضع واجهة المستخدم ليلاً</string>
-    <string name="title_pref_use_hev_tunnel">Enable New TUN Feature</string>
-    <string name="summary_pref_use_hev_tunnel">When enabled, TUN will use hev-socks5-tunnel; otherwise, it will use badvpn-tun2socks.</string>
+    <string name="title_pref_use_hev_tunnel">Enable Hev TUN Feature</string>
+    <string name="summary_pref_use_hev_tunnel">When enabled, TUN will use hev-socks5-tunnel; otherwise, it will use xray-core.</string>
     <string name="title_pref_hev_tunnel_loglevel">Hev Tun Log Level</string>
     <string name="title_pref_hev_tunnel_rw_timeout">Hev Tun read/write timeout (seconds) (tcp,udp default 300,60)</string>
 
@@ -287,7 +288,7 @@
     <string name="title_user_asset_setting">Asset files</string>
     <string name="title_sort_by_test_results">الفرز حسب نتائج الاختبار (5)</string>
     <string name="title_filter_config">تصفية ملف التكوين</string>
-    <string name="filter_config_all">جميع مجموعات الاشتراك</string>
+    <string name="filter_config_all">All</string>
     <string name="title_del_duplicate_config_count">حذف %d من الإعدادات المكررة</string>
 
     <string name="title_del_config_count">Delete %d configurations</string>

@@ -133,7 +133,8 @@
     <string name="msg_dialog_progress">লোড হচ্ছে</string>
     <string name="menu_item_search">অনুসন্ধান করুন</string>
     <string name="menu_item_select_all">সবকিছু নির্বাচন করুন</string>
-    <string name="msg_enter_keywords">কীওয়ার্ড লিখুন</string>
+    <string name="menu_item_invert_selection">Invert selection</string>
+    <string name="msg_enter_keywords">কিওয়ার্ড লিখুন</string>
     <string name="switch_bypass_apps_mode">বাইপাস মোড</string>
     <string name="menu_item_select_proxy_app">অটো সিলেক্ট প্রক্সি অ্যাপ</string>
     <string name="msg_downloading_content">বিষয়বস্তু ডাউনলোড হচ্ছে</string>
@@ -257,8 +258,8 @@
     <string name="title_language">ভাষা</string>
     <string name="title_ui_settings">ইউআই সেটিংস</string>
     <string name="title_pref_ui_mode_night">ইউআই মোড সেটিংস</string>
-    <string name="title_pref_use_hev_tunnel">Enable New TUN Feature</string>
-    <string name="summary_pref_use_hev_tunnel">When enabled, TUN will use hev-socks5-tunnel; otherwise, it will use badvpn-tun2socks.</string>
+    <string name="title_pref_use_hev_tunnel">Enable Hev TUN Feature</string>
+    <string name="summary_pref_use_hev_tunnel">When enabled, TUN will use hev-socks5-tunnel; otherwise, it will use xray-core.</string>
     <string name="title_pref_hev_tunnel_loglevel">Hev Tun Log Level</string>
     <string name="title_pref_hev_tunnel_rw_timeout">Hev Tun read/write timeout (seconds) (tcp,udp default 300,60)</string>
 
@@ -287,7 +288,7 @@
     <string name="title_user_asset_setting">Asset files</string>
     <string name="title_sort_by_test_results">টেস্ট ফলাফল দ্বারা সাজানো</string>
     <string name="title_filter_config">কনফিগারেশন ফাইল ফিল্টার করুন</string>
-    <string name="filter_config_all">সব সাবস্ক্রিপশন গ্রুপ</string>
+    <string name="filter_config_all">All</string>
     <string name="title_del_duplicate_config_count">%d ডুপ্লিকেট কনফিগারেশন মুছে ফেলুন</string>
     <string name="title_del_config_count">Delete %d configurations</string>
     <string name="title_import_config_count">Import %d configurations</string>
