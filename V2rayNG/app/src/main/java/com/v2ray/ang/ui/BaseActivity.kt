@@ -39,6 +39,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         if (!Utils.getDarkModeStatus(this)) {
             WindowCompat.getInsetsController(window, window.decorView).apply {
@@ -212,5 +213,4 @@ abstract class BaseActivity : AppCompatActivity() {
     protected fun isLoadingVisible(): Boolean {
         return progressBar?.visibility == View.VISIBLE
     }
-
 }
