@@ -16,6 +16,9 @@ object AppConfig {
     /** Legacy configuration keys. */
     const val ANG_CONFIG = "ang_config"
 
+    // Default subscription ID for ungrouped servers
+    const val DEFAULT_SUBSCRIPTION_ID = "__default_subscription__"
+
     /** Preferences mapped to MMKV storage. */
     const val PREF_SNIFFING_ENABLED = "pref_sniffing_enabled"
     const val PREF_ROUTE_ONLY_ENABLED = "pref_route_only_enabled"
@@ -48,6 +51,7 @@ object AppConfig {
     const val PREF_CONFIRM_REMOVE = "pref_confirm_remove"
     const val PREF_START_SCAN_IMMEDIATE = "pref_start_scan_immediate"
     const val PREF_DOUBLE_COLUMN_DISPLAY = "pref_double_column_display"
+    const val PREF_GROUP_ALL_DISPLAY = "pref_group_all_display"
     const val PREF_LANGUAGE = "pref_language"
     const val PREF_UI_MODE_NIGHT = "pref_ui_mode_night"
     const val PREF_PREFER_IPV6 = "pref_prefer_ipv6"
