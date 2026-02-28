@@ -17,6 +17,7 @@ import com.v2ray.ang.R
 import com.v2ray.ang.dto.GroupMapItem
 import com.v2ray.ang.dto.ServersCache
 import com.v2ray.ang.dto.SubscriptionCache
+import com.v2ray.ang.dto.SubscriptionUpdateResult
 import com.v2ray.ang.extension.serializable
 import com.v2ray.ang.extension.toastError
 import com.v2ray.ang.extension.toastSuccess
@@ -93,38 +94,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-//    /**
-//     * Appends a custom configuration server.
-//     * @param server The server configuration to append.
-//     * @return True if the server was successfully appended, false otherwise.
-//     */
-//    fun appendCustomConfigServer(server: String): Boolean {
-//        if (server.contains("inbounds")
-//            && server.contains("outbounds")
-//            && server.contains("routing")
-//        ) {
-//            try {
-//                val config = CustomFmt.parse(server) ?: return false
-//                config.subscriptionId = subscriptionId
-//                val key = MmkvManager.encodeServerConfig("", config)
-//                MmkvManager.encodeServerRaw(key, server)
-//                serverList.add(0, key)
-////                val profile = ProfileLiteItem(
-////                    configType = config.configType,
-////                    subscriptionId = config.subscriptionId,
-////                    remarks = config.remarks,
-////                    server = config.getProxyOutbound()?.getServerAddress(),
-////                    serverPort = config.getProxyOutbound()?.getServerPort(),
-////                )
-//                serversCache.add(0, ServersCache(key, config))
-//                return true
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
-//        }
-//        return false
-//    }
-
     /**
      * Swaps the positions of two servers.
      * @param fromPosition The initial position of the server.
@@ -150,22 +119,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val kw = keywordFilter.trim().lowercase()
         for (guid in serverList) {
             val profile = MmkvManager.decodeServerConfig(guid) ?: continue
-//            var profile = MmkvManager.decodeProfileConfig(guid)
-//            if (profile == null) {
-//                val config = MmkvManager.decodeServerConfig(guid) ?: continue
-//                profile = ProfileLiteItem(
-//                    configType = config.configType,
-//                    subscriptionId = config.subscriptionId,
-//                    remarks = config.remarks,
-//                    server = config.getProxyOutbound()?.getServerAddress(),
-//                    serverPort = config.getProxyOutbound()?.getServerPort(),
-//                )
-//                MmkvManager.encodeServerConfig(guid, config)
-//            }
-
-//            if (subscriptionId.isNotEmpty() && subscriptionId != profile.subscriptionId) {
-//                continue
-//            }
             if (kw.isEmpty()) {
                 serversCache.add(ServersCache(guid, profile))
                 continue
@@ -183,13 +136,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     /**
      * Updates the configuration via subscription for all servers.
-     * @return The number of updated configurations.
+     * @return Detailed result of the subscription update operation.
      */
-    fun updateConfigViaSubAll(): Int {
+    fun updateConfigViaSubAll(): SubscriptionUpdateResult {
         if (subscriptionId.isEmpty()) {
             return AngConfigManager.updateConfigViaSubAll()
         } else {
-            val subItem = MmkvManager.decodeSubscription(subscriptionId) ?: return 0
+            val subItem = MmkvManager.decodeSubscription(subscriptionId) ?: return SubscriptionUpdateResult()
             return AngConfigManager.updateConfigViaSub(SubscriptionCache(subscriptionId, subItem))
         }
     }
