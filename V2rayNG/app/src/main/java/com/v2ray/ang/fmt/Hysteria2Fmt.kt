@@ -3,7 +3,6 @@ package com.v2ray.ang.fmt
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.dto.ProfileItem
 import com.v2ray.ang.dto.V2rayConfig.OutboundBean
-import com.v2ray.ang.dto.V2rayConfig.OutboundBean.StreamSettingsBean.FinalMaskBean
 import com.v2ray.ang.enums.EConfigType
 import com.v2ray.ang.enums.NetworkType
 import com.v2ray.ang.extension.idnHost
@@ -73,7 +72,37 @@ object Hysteria2Fmt : FmtBase() {
             dicQuery["mport"] = config.portHopping.orEmpty()
         }
         if (config.portHoppingInterval.isNotNullEmpty()) {
-            dicQuery["mportHopInt"] = config.portHoppingInterval.orEmpty()
+            val rawInterval = config.portHoppingInterval?.trim().nullIfBlank()
+            val interval = if (rawInterval == null) {
+                null
+            } else {
+                val singleValue = rawInterval.toIntOrNull()
+                if (singleValue != null) {
+                    if (singleValue < 5) {
+                        null
+                    } else {
+                        rawInterval
+                    }
+                } else {
+                    val parts = rawInterval.split('-')
+                    if (parts.size == 2) {
+                        val start = parts[0].trim().toIntOrNull()
+                        val end = parts[1].trim().toIntOrNull()
+                        if (start != null && end != null) {
+                            val minStart = maxOf(5, start)
+                            val minEnd = maxOf(minStart, end)
+                            (minStart + minEnd) / 2
+                        } else {
+                            null
+                        }
+                    } else {
+                        null
+                    }
+                }
+            }
+            if (interval != null) {
+                dicQuery["mportHopInt"] = interval.toString()
+            }
         }
         if (config.pinnedCA256.isNotNullEmpty()) {
             dicQuery["pinSHA256"] = config.pinnedCA256.orEmpty()
@@ -107,18 +136,6 @@ object Hysteria2Fmt : FmtBase() {
             V2rayConfigManager.populateTlsSettings(it, profileItem, sni)
         }
 
-        if (profileItem.obfsPassword.isNotNullEmpty()) {
-            outboundBean.streamSettings?.finalmask = FinalMaskBean(
-                udp = listOf(
-                    FinalMaskBean.MaskBean(
-                        type = "salamander",
-                        settings = FinalMaskBean.MaskBean.MaskSettingsBean(
-                            password = profileItem.obfsPassword
-                        )
-                    )
-                )
-            )
-        }
         return outboundBean
     }
 }

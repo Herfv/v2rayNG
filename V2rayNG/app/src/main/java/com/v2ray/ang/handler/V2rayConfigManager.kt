@@ -710,8 +710,6 @@ object V2rayConfigManager {
         } else {
             v2rayConfig.outbounds.add(outbound)
         }
-
-        updateOutboundFragment(v2rayConfig)
         return true
     }
 
@@ -955,68 +953,80 @@ object V2rayConfigManager {
      *
      * Configures packet fragmentation for TLS and REALITY protocols if enabled.
      *
-     * @param v2rayConfig The V2ray configuration object to be modified
+     * @param streamSettings The streamSettings object to be modified
      * @return true if fragment configuration was successful, false otherwise
      */
-    private fun updateOutboundFragment(v2rayConfig: V2rayConfig): Boolean {
+    private fun updateOutboundFragment(streamSettings: StreamSettingsBean): Boolean {
         try {
             if (MmkvManager.decodeSettingsBool(AppConfig.PREF_FRAGMENT_ENABLED, false) == false) {
                 return true
             }
-            if (v2rayConfig.outbounds[0].streamSettings?.security != AppConfig.TLS
-                && v2rayConfig.outbounds[0].streamSettings?.security != AppConfig.REALITY
+            if (streamSettings.security != AppConfig.TLS
+                && streamSettings.security != AppConfig.REALITY
             ) {
                 return true
             }
-
-            val fragmentOutbound =
-                OutboundBean(
-                    protocol = AppConfig.PROTOCOL_FREEDOM,
-                    tag = AppConfig.TAG_FRAGMENT,
-                    mux = null
-                )
+            if (streamSettings.sockopt?.dialerProxy.isNotNullEmpty()) {
+                return true
+            }
 
             var packets =
                 MmkvManager.decodeSettingsString(AppConfig.PREF_FRAGMENT_PACKETS) ?: "tlshello"
-            if (v2rayConfig.outbounds[0].streamSettings?.security == AppConfig.REALITY
+            if (streamSettings.security == AppConfig.REALITY
                 && packets == "tlshello"
             ) {
                 packets = "1-3"
-            } else if (v2rayConfig.outbounds[0].streamSettings?.security == AppConfig.TLS
+            } else if (streamSettings.security == AppConfig.TLS
                 && packets != "tlshello"
             ) {
                 packets = "tlshello"
             }
 
-            fragmentOutbound.settings = OutSettingsBean(
-                fragment = OutSettingsBean.FragmentBean(
+            val fragmentMask = StreamSettingsBean.FinalMaskBean.MaskBean(
+                type = "fragment",
+                settings = StreamSettingsBean.FinalMaskBean.MaskBean.MaskSettingsBean(
                     packets = packets,
                     length = MmkvManager.decodeSettingsString(AppConfig.PREF_FRAGMENT_LENGTH)
                         ?: "50-100",
-                    interval = MmkvManager.decodeSettingsString(AppConfig.PREF_FRAGMENT_INTERVAL)
+                    delay = MmkvManager.decodeSettingsString(AppConfig.PREF_FRAGMENT_INTERVAL)
                         ?: "10-20"
-                ),
-                noises = listOf(
-                    OutSettingsBean.NoiseBean(
-                        type = "rand",
-                        packet = "10-20",
-                        delay = "10-16",
+                )
+            )
+            val noiseMask = StreamSettingsBean.FinalMaskBean.MaskBean(
+                type = "noise",
+                settings = StreamSettingsBean.FinalMaskBean.MaskBean.MaskSettingsBean(
+                    noise = listOf(
+                        StreamSettingsBean.FinalMaskBean.MaskBean.MaskSettingsBean.NoiseMaskBean(
+                            rand = "10-20",
+                            delay = "10-16",
+                        )
                     )
-                ),
-            )
-            fragmentOutbound.streamSettings = StreamSettingsBean(
-                sockopt = StreamSettingsBean.SockoptBean(
-                    TcpNoDelay = true,
-                    mark = 255
                 )
             )
-            v2rayConfig.outbounds.add(fragmentOutbound)
 
-            //proxy chain
-            v2rayConfig.outbounds[0].streamSettings?.sockopt =
-                StreamSettingsBean.SockoptBean(
-                    dialerProxy = AppConfig.TAG_FRAGMENT
-                )
+            val finalMaskObj = streamSettings.finalmask?.let { existingFinalMask ->
+                JsonUtil.parseString(JsonUtil.toJson(existingFinalMask))
+            } ?: com.google.gson.JsonObject()
+
+            // finalmask.tcp / finalmask.udp are arrays; prepend mask at index 0.
+            fun prependMask(scope: String, mask: StreamSettingsBean.FinalMaskBean.MaskBean) {
+                val current = finalMaskObj.get(scope)
+                if (current != null && current.isJsonArray && current.asJsonArray.size() > 0) {
+                    return
+                }
+
+                val newArray = JsonArray()
+                newArray.add(JsonUtil.parseString(JsonUtil.toJson(mask)))
+
+                if (current != null && current.isJsonArray) {
+                    current.asJsonArray.forEach { newArray.add(it) }
+                }
+                finalMaskObj.add(scope, newArray)
+            }
+
+            prependMask("tcp", fragmentMask)
+            prependMask("udp", noiseMask)
+            streamSettings.finalmask = finalMaskObj
         } catch (e: Exception) {
             Log.e(AppConfig.TAG, "Failed to update outbound fragment", e)
             return false
@@ -1177,9 +1187,6 @@ object V2rayConfigManager {
         val finalMask = profileItem.finalMask
         var sni: String? = null
         streamSettings.network = transport.ifEmpty { NetworkType.TCP.type }
-        finalMask?.let {
-            streamSettings.finalmask = JsonUtil.parseString(finalMask)
-        }
         when (streamSettings.network) {
             NetworkType.TCP.type -> {
                 val tcpSetting = StreamSettingsBean.TcpSettingsBean()
@@ -1293,21 +1300,69 @@ object V2rayConfigManager {
                 val hysteriaSetting = StreamSettingsBean.HysteriaSettingsBean(
                     version = 2,
                     auth = profileItem.password.orEmpty(),
-                    up = profileItem.bandwidthUp?.ifEmpty { "0" }.orEmpty(),
-                    down = profileItem.bandwidthDown?.ifEmpty { "0" }.orEmpty(),
-                    udphop = null
                 )
+                val quicParams = StreamSettingsBean.FinalMaskBean.QuicParamsBean(
+                    brutalUp = profileItem.bandwidthUp?.nullIfBlank(),
+                    brutalDown = profileItem.bandwidthDown?.nullIfBlank(),
+                )
+                quicParams.congestion = if (quicParams.brutalUp != null || quicParams.brutalDown != null) "brutal" else null
                 if (profileItem.portHopping.isNotNullEmpty()) {
-                    hysteriaSetting.udphop = StreamSettingsBean.HysteriaSettingsBean.HysteriaUdpHopBean(
-                        port = profileItem.portHopping,
-                        interval = profileItem.portHoppingInterval
-                            ?.trim()
-                            ?.toIntOrNull()
-                            ?.takeIf { it >= 5 }
-                            ?: 30
+                    val rawInterval = profileItem.portHoppingInterval?.trim().nullIfBlank()
+                    val interval = if (rawInterval == null) {
+                        "30"
+                    } else {
+                        val singleValue = rawInterval.toIntOrNull()
+                        if (singleValue != null) {
+                            if (singleValue < 5) {
+                                "30"
+                            } else {
+                                rawInterval
+                            }
+                        } else {
+                            val parts = rawInterval.split('-')
+                            if (parts.size == 2) {
+                                val start = parts[0].trim().toIntOrNull()
+                                val end = parts[1].trim().toIntOrNull()
+                                if (start != null && end != null) {
+                                    val minStart = maxOf(5, start)
+                                    val minEnd = maxOf(minStart, end)
+                                        "$minStart-$minEnd"
+                                } else {
+                                    "30"
+                                }
+                            } else {
+                                "30"
+                            }
+                        }
+                    }
+                    quicParams.udpHop = StreamSettingsBean.FinalMaskBean.QuicParamsBean.UdpHopBean(
+                        ports = profileItem.portHopping,
+                        interval = interval
+                    )
+                }
+                val finalmask = StreamSettingsBean.FinalMaskBean(
+                    quicParams = quicParams
+                )
+                if (profileItem.obfsPassword.isNotNullEmpty()) {
+                    finalmask.udp = listOf(
+                        StreamSettingsBean.FinalMaskBean.MaskBean(
+                            type = "salamander",
+                            settings = StreamSettingsBean.FinalMaskBean.MaskBean.MaskSettingsBean(
+                                password = profileItem.obfsPassword.orEmpty()
+                            )
+                        )
                     )
                 }
                 streamSettings.hysteriaSettings = hysteriaSetting
+                streamSettings.finalmask = finalmask
+            }
+        }
+        finalMask?.let {
+            val parsedFinalMask = JsonUtil.parseString(finalMask)
+            if (parsedFinalMask != null) {
+                streamSettings.finalmask = parsedFinalMask
+            } else {
+                Log.w("V2rayConfigManager", "Invalid finalMask JSON, keeping previously generated finalmask")
             }
         }
         return sni
@@ -1356,6 +1411,10 @@ object V2rayConfigManager {
         } else if (streamSettings.security == AppConfig.REALITY) {
             streamSettings.tlsSettings = null
             streamSettings.realitySettings = tlsSetting
+        }
+
+        if (profileItem.finalMask.isNullOrEmpty()) {
+            updateOutboundFragment(streamSettings)
         }
     }
 
