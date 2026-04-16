@@ -2,8 +2,9 @@ package com.v2ray.ang.handler
 
 import android.content.Context
 import android.content.res.AssetManager
+import android.os.Build
 import android.text.TextUtils
-import android.util.Log
+import com.v2ray.ang.util.LogUtil
 import androidx.appcompat.app.AppCompatDelegate
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.AppConfig.ANG_PACKAGE
@@ -104,7 +105,7 @@ object SettingsManager {
             resetRoutingRulesetsCommon(rulesetList)
             return true
         } catch (e: Exception) {
-            Log.e(ANG_PACKAGE, "Failed to reset routing rulesets", e)
+            LogUtil.e(ANG_PACKAGE, "Failed to reset routing rulesets", e)
             return false
         }
     }
@@ -253,7 +254,7 @@ object SettingsManager {
     fun removeSubscriptionWithDefault(subid: String) {
 //        val subsList = decodeSubsList()
 //        if (subsList.size == 1 && subsList.first() == DEFAULT_SUBSCRIPTION_ID) {
-//            Log.i(ANG_PACKAGE,"Attempted to remove the only existing default subscription, operation ignored.")
+//            LogUtil.i(ANG_PACKAGE,"Attempted to remove the only existing default subscription, operation ignored.")
 //            return
 //        }
 
@@ -343,10 +344,10 @@ object SettingsManager {
                             input.copyTo(output)
                         }
                     }
-                    Log.i(AppConfig.TAG, "Copied from apk assets folder to ${target.absolutePath}")
+                    LogUtil.i(AppConfig.TAG, "Copied from apk assets folder to ${target.absolutePath}")
                 }
         } catch (e: Exception) {
-            Log.e(ANG_PACKAGE, "asset copy failed", e)
+            LogUtil.e(ANG_PACKAGE, "asset copy failed", e)
         }
     }
 
@@ -470,6 +471,28 @@ object SettingsManager {
     fun isVpnMode(): Boolean {
         val mode = MmkvManager.decodeSettingsString(AppConfig.PREF_MODE)
         return mode == null || mode == VPN
+    }
+
+    /**
+     *  Check if process routing can be used.
+     */
+    fun canUseProcessRouting(): Boolean {
+        // Android 10+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            return false
+        }
+
+        // Must xray tun
+        if (isUsingHevTun()) {
+            return false
+        }
+
+        // Must have route only enabled
+        if (MmkvManager.decodeSettingsBool(AppConfig.PREF_ROUTE_ONLY_ENABLED, false) == false) {
+            return false
+        }
+
+        return true
     }
 
     /**

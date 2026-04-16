@@ -186,8 +186,11 @@
     <string name="title_pref_fake_dns_enabled">Bật FakeDNS</string>
     <string name="summary_pref_fake_dns_enabled">FakeDNS lấy tên miền mục tiêu bằng cách giả mạo DNS (Nhanh hơn, nhưng có thể không hoạt động cho một số ứng dụng).</string>
 
+    <string name="title_pref_ipv6_enabled">Bật IPv6</string>
+    <string name="summary_pref_ipv6_enabled">Thêm địa chỉ và tuyến IPv6 vào giao diện VPN</string>
+
     <string name="title_pref_prefer_ipv6">Ưu tiên IPv6</string>
-    <string name="summary_pref_prefer_ipv6">Ưu tiên sử dụng địa chỉ IPv6 cho kết nối và định tuyến.</string>
+    <string name="summary_pref_prefer_ipv6">Ưu tiên địa chỉ IPv6 khi phân giải tên miền</string>
 
     <string name="title_pref_remote_dns">DNS ngoại quốc (UDP / TCP / HTTPS / QUIC) (Không bắt buộc)</string>
     <string name="summary_pref_remote_dns">DNS</string>
@@ -317,7 +320,7 @@
     <!-- RoutingSettingActivity -->
     <string name="routing_settings_domain_strategy">Chiến lược tên miền (DomainStrategy)</string>
     <string name="routing_settings_title">Cài đặt định tuyến</string>
-    <string name="routing_settings_tips">Phân cách bằng dấu phẩy (,). Có thể tải xuống Rules mặc định để tham khảo ở menu ba chấm.</string>
+    <string name="routing_settings_tips">Phân cách bằng dấu phẩy (,). Chọn một trong: domain, ip hoặc process</string>
     <string name="routing_settings_save">Lưu lại</string>
     <string name="routing_settings_delete">Xoá</string>
     <string name="routing_settings_rule_title">Routing Rule Settings</string>
@@ -328,6 +331,15 @@
     <string name="routing_settings_import_rulesets_from_qrcode">Nhập bộ quy tắc từ QRcode</string>
     <string name="routing_settings_export_rulesets_to_clipboard">Export ruleset to clipboard</string>
     <string name="routing_settings_locked">Locked, keep this rule when import presets</string>
+    <string name="routing_settings_domain">domain</string>
+    <string name="routing_settings_ip">ip</string>
+    <string name="routing_settings_process">process (Package Name — only supported when using Xray TUN, routeOnly enabled, and Android 10+)</string>
+    <string name="routing_settings_port">port</string>
+    <string name="routing_settings_protocol">protocol</string>
+    <string name="routing_settings_protocol_tip">[http,tls,bittorrent]</string>
+    <string name="routing_settings_network">network</string>
+    <string name="routing_settings_network_tip">[udp|tcp]</string>
+    <string name="routing_settings_outbound_tag">outboundTag</string>
 
     <string name="connection_test_pending">Kiểm tra kết nối</string>
     <string name="connection_test_testing">Đang kiểm tra kết nối mạng...</string>

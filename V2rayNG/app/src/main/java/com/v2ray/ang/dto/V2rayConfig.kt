@@ -46,7 +46,8 @@ data class V2rayConfig(
             var userLevel: Int? = null,
             var accounts: List<SocksAccountBean>? = null,
             var name: String? = null,
-            var mtu: List<Int>? = null
+
+            var mtu: Int? = null
         ) {
             data class SocksAccountBean(
                 var user: String = "",
@@ -422,8 +423,9 @@ data class V2rayConfig(
 
         data class RulesBean(
             var type: String = "field",
-            var ip: ArrayList<String>? = null,
-            var domain: ArrayList<String>? = null,
+            var ip: List<String>? = null,
+            var domain: List<String>? = null,
+            var process: List<String>? = null,
             var outboundTag: String? = null,
             var balancerTag: String? = null,
             var port: String? = null,
