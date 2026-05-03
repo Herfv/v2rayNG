@@ -30,6 +30,7 @@
     <string name="menu_item_import_config_clipboard">Импорт из буфера обмена</string>
     <string name="menu_item_import_config_local">Импорт из файла</string>
     <string name="menu_item_import_config_policy_group">Добавить группу политик</string>
+    <string name="menu_item_import_config_proxy_chain">Add [Proxy chain]</string>
     <string name="menu_item_import_config_manually_vmess">Ручной ввод VMess</string>
     <string name="menu_item_import_config_manually_vless">Ручной ввод VLESS</string>
     <string name="menu_item_import_config_manually_ss">Ручной ввод Shadowsocks</string>
@@ -212,6 +213,7 @@
 
     <string name="title_pref_delay_test_url">Сервис проверки задержки</string>
     <string name="summary_pref_delay_test_url">URL</string>
+    <string name="title_pref_real_ping_concurrency">Параллельность теста задержки</string>
 
     <string name="title_pref_ip_api_url">Сервис проверки текущего соединения</string>
     <string name="summary_pref_ip_api_url">URL</string>
@@ -378,6 +380,12 @@
     <string name="title_policy_group_type">Тип группы политик</string>
     <string name="title_policy_group_subscription_id">Из группы подписки</string>
     <string name="title_policy_group_subscription_filter">Название фильтра</string>
+    <string name="server_proxy_chain_members">Участники цепочки прокси</string>
+    <string name="server_proxy_chain_pick_members">Нажмите здесь, чтобы выбрать участника</string>
+    <string name="server_proxy_chain_member_unselected">Выберите участника</string>
+    <string name="server_proxy_chain_members_unselected">Пожалуйста, выберите участника для каждой строки цепочки</string>
+    <string name="server_proxy_chain_members_insufficient">Недостаточно участников</string>
+    <string name="server_proxy_chain_members_invalid">Недопустимые участники цепочки: %1$s</string>
 
     <!-- BackupActivity -->
     <string name="title_configuration_backup_restore">Резервное копирование</string>

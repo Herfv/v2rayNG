@@ -181,6 +181,10 @@ class GroupServerFragment : BaseFragment<FragmentGroupServerBinding>(),
                 ownerActivity.startActivity(intent.setClass(ownerActivity, ServerGroupActivity::class.java))
             }
 
+            EConfigType.PROXYCHAIN -> {
+                ownerActivity.startActivity(intent.setClass(ownerActivity, ServerProxyChainActivity::class.java))
+            }
+
             else -> {
                 ownerActivity.startActivity(intent.setClass(ownerActivity, ServerActivity::class.java))
             }
@@ -265,7 +269,9 @@ class GroupServerFragment : BaseFragment<FragmentGroupServerBinding>(),
         }
 
         override fun onShare(guid: String, profile: ProfileItem, position: Int, more: Boolean) {
-            val isCustom = profile.configType == EConfigType.CUSTOM || profile.configType == EConfigType.POLICYGROUP
+            val isCustom = profile.configType == EConfigType.CUSTOM
+                    || profile.configType == EConfigType.POLICYGROUP
+                    || profile.configType == EConfigType.PROXYCHAIN
 
             val (shareOptions, skip) = if (more) {
                 val options = if (isCustom) share_method_more.asList().takeLast(3) else share_method_more.asList()

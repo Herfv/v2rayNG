@@ -254,6 +254,11 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
             true
         }
 
+        R.id.import_manually_proxy_chain -> {
+            importManually(EConfigType.PROXYCHAIN.value)
+            true
+        }
+
         R.id.import_manually_vmess -> {
             importManually(EConfigType.VMESS.value)
             true
@@ -355,6 +360,12 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
                 Intent()
                     .putExtra("subscriptionId", mainViewModel.subscriptionId)
                     .setClass(this, ServerGroupActivity::class.java)
+            )
+        } else if (createConfigType == EConfigType.PROXYCHAIN.value) {
+            startActivity(
+                Intent()
+                    .putExtra("subscriptionId", mainViewModel.subscriptionId)
+                    .setClass(this, ServerProxyChainActivity::class.java)
             )
         } else {
             startActivity(

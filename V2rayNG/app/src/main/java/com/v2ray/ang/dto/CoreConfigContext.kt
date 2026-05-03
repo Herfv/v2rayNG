@@ -12,4 +12,5 @@ data class CoreConfigContext(
     val selectedProfile: ProfileItem,
     val resolvedProfiles: List<ProfileItem>,
     val resolvedType: CoreResolvedType,
+    val customOutboundProfiles: Map<String, ProfileItem> = emptyMap(),
 )

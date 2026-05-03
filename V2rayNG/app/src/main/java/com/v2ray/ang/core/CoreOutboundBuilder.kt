@@ -26,7 +26,6 @@ object CoreOutboundBuilder {
     fun convert(profileItem: ProfileItem): OutboundBean? {
         val outbound = when (profileItem.configType) {
             EConfigType.VMESS -> toOutboundVmess(profileItem)
-            EConfigType.CUSTOM -> null
             EConfigType.SHADOWSOCKS -> toOutboundShadowsocks(profileItem)
             EConfigType.SOCKS -> toOutboundSocks(profileItem)
             EConfigType.VLESS -> toOutboundVless(profileItem)
@@ -34,7 +33,6 @@ object CoreOutboundBuilder {
             EConfigType.WIREGUARD -> toOutboundWireguard(profileItem)
             EConfigType.HYSTERIA2 -> toOutboundHysteria2(profileItem)
             EConfigType.HTTP -> toOutboundHttp(profileItem)
-            EConfigType.POLICYGROUP -> null
             else -> null
         }
 
@@ -165,8 +163,7 @@ object CoreOutboundBuilder {
                     streamSettings = OutboundBean.StreamSettingsBean()
                 )
 
-            EConfigType.CUSTOM -> null
-            EConfigType.POLICYGROUP -> null
+            else -> null
         }
     }
 

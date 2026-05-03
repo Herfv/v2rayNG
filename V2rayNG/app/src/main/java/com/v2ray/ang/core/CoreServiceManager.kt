@@ -127,6 +127,7 @@ object CoreServiceManager {
 
         if (config.configType != EConfigType.CUSTOM
             && config.configType != EConfigType.POLICYGROUP
+            && config.configType != EConfigType.PROXYCHAIN
             && !Utils.isValidUrl(config.server)
             && !Utils.isPureIpAddress(config.server.orEmpty())
         ) {
