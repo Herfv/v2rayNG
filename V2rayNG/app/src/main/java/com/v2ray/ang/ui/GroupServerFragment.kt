@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.activity.result.contract.ActivityResultContracts
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
 import com.v2ray.ang.contracts.MainAdapterListener
@@ -26,6 +27,7 @@ import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.helper.SimpleItemTouchHelperCallback
 import com.v2ray.ang.util.LogUtil
 import com.v2ray.ang.viewmodel.MainViewModel
+import com.v2ray.ang.handler.SettingsChangeManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -43,6 +45,11 @@ class GroupServerFragment : BaseFragment<FragmentGroupServerBinding>(),
     }
     private val share_method_more: Array<out String> by lazy {
         ownerActivity.resources.getStringArray(R.array.share_method_more)
+    }
+    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (SettingsChangeManager.consumeRestartService() && mainViewModel.isRunning.value == true) {
+            ownerActivity.restartV2Ray()
+        }
     }
 
     companion object {
@@ -168,27 +175,20 @@ class GroupServerFragment : BaseFragment<FragmentGroupServerBinding>(),
      * @param profile The server configuration
      */
     private fun editServer(guid: String, profile: ProfileItem) {
-        val intent = Intent().putExtra("guid", guid)
+        val activityClass = when (profile.configType) {
+            EConfigType.CUSTOM -> ServerCustomConfigActivity::class.java
+            EConfigType.POLICYGROUP -> ServerGroupActivity::class.java
+            EConfigType.PROXYCHAIN -> ServerProxyChainActivity::class.java
+            else -> ServerActivity::class.java
+        }
+
+        val intent = Intent(ownerActivity, activityClass)
+            .putExtra("guid", guid)
             .putExtra("isRunning", mainViewModel.isRunning.value)
             .putExtra("createConfigType", profile.configType.value)
             .putExtra("subscriptionId", subId)
-        when (profile.configType) {
-            EConfigType.CUSTOM -> {
-                ownerActivity.startActivity(intent.setClass(ownerActivity, ServerCustomConfigActivity::class.java))
-            }
 
-            EConfigType.POLICYGROUP -> {
-                ownerActivity.startActivity(intent.setClass(ownerActivity, ServerGroupActivity::class.java))
-            }
-
-            EConfigType.PROXYCHAIN -> {
-                ownerActivity.startActivity(intent.setClass(ownerActivity, ServerProxyChainActivity::class.java))
-            }
-
-            else -> {
-                ownerActivity.startActivity(intent.setClass(ownerActivity, ServerActivity::class.java))
-            }
-        }
+        launcher.launch(intent)
     }
 
     /**

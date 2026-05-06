@@ -457,7 +457,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 }
 
                 AppConfig.MSG_STATE_START_FAILURE -> {
-                    getApplication<AngApplication>().toastError(R.string.toast_services_failure)
+                    val errorMessage = intent.getStringExtra("content")
+                    if (!errorMessage.isNullOrBlank()) {
+                        getApplication<AngApplication>().toastError(errorMessage)
+                    } else {
+                        getApplication<AngApplication>().toastError(R.string.toast_services_failure)
+                    }
                     isRunning.value = false
                 }
 

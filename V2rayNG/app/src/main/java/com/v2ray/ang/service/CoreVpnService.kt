@@ -113,6 +113,7 @@ class CoreVpnService : VpnService(), ServiceControl {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         LogUtil.i(AppConfig.TAG, "StartCore-VPN: Service command received")
+        NotificationManager.showNotification(null)
         setupVpnService()
         startService()
         return START_STICKY

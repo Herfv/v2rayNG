@@ -19,6 +19,7 @@ import com.v2ray.ang.helper.SimpleItemTouchHelperCallback
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.handler.SettingsManager
 import com.v2ray.ang.util.Utils
+import com.v2ray.ang.handler.SettingsChangeManager
 
 class ServerProxyChainActivity : BaseActivity() {
     private val binding by lazy { ActivityServerProxyChainBinding.inflate(layoutInflater) }
@@ -133,6 +134,9 @@ class ServerProxyChainActivity : BaseActivity() {
         }
 
         MmkvManager.encodeServerConfig(editGuid, config)
+        if (isRunning) {
+            SettingsChangeManager.makeRestartService()
+        }
         toastSuccess(R.string.toast_success)
         finish()
         return true
@@ -195,17 +199,9 @@ class ServerProxyChainActivity : BaseActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.action_server, menu)
-        val delButton = menu.findItem(R.id.del_config)
-        val saveButton = menu.findItem(R.id.save_config)
 
-        if (editGuid.isNotEmpty()) {
-            if (isRunning) {
-                delButton?.isVisible = false
-                saveButton?.isVisible = false
-            }
-        } else {
-            delButton?.isVisible = false
-        }
+        val delButton = menu.findItem(R.id.del_config)
+        delButton?.isVisible = editGuid.isNotEmpty() && !isRunning
 
         return super.onCreateOptionsMenu(menu)
     }

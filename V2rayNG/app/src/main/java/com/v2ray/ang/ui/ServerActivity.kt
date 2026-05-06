@@ -31,6 +31,7 @@ import com.v2ray.ang.handler.AngConfigManager
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.util.JsonUtil
 import com.v2ray.ang.util.Utils
+import com.v2ray.ang.handler.SettingsChangeManager
 
 class ServerActivity : BaseActivity() {
 
@@ -507,6 +508,9 @@ class ServerActivity : BaseActivity() {
         }
         //LogUtil.i(AppConfig.TAG, JsonUtil.toJsonPretty(config) ?: "")
         MmkvManager.encodeServerConfig(editGuid, config)
+        if (isRunning) {
+            SettingsChangeManager.makeRestartService()
+        }
         toastSuccess(R.string.toast_success)
         finish()
         return true
@@ -656,17 +660,9 @@ class ServerActivity : BaseActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.action_server, menu)
-        val delButton = menu.findItem(R.id.del_config)
-        val saveButton = menu.findItem(R.id.save_config)
 
-        if (editGuid.isNotEmpty()) {
-            if (isRunning) {
-                delButton?.isVisible = false
-                saveButton?.isVisible = false
-            }
-        } else {
-            delButton?.isVisible = false
-        }
+        val delButton = menu.findItem(R.id.del_config)
+        delButton?.isVisible = editGuid.isNotEmpty() && !isRunning
 
         return super.onCreateOptionsMenu(menu)
     }

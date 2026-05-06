@@ -19,6 +19,7 @@ import com.v2ray.ang.handler.AngConfigManager
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.util.LogUtil
 import com.v2ray.ang.util.Utils
+import com.v2ray.ang.handler.SettingsChangeManager
 
 class ServerCustomConfigActivity : BaseActivity() {
     private val binding by lazy { ActivityServerCustomConfigBinding.inflate(layoutInflater) }
@@ -94,6 +95,9 @@ class ServerCustomConfigActivity : BaseActivity() {
 
         MmkvManager.encodeServerConfig(editGuid, config)
         MmkvManager.encodeServerRaw(editGuid, binding.editor.text.toString())
+        if (isRunning) {
+            SettingsChangeManager.makeRestartService()
+        }
         toastSuccess(R.string.toast_success)
         finish()
         return true
@@ -119,17 +123,9 @@ class ServerCustomConfigActivity : BaseActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.action_server, menu)
-        val delButton = menu.findItem(R.id.del_config)
-        val saveButton = menu.findItem(R.id.save_config)
 
-        if (editGuid.isNotEmpty()) {
-            if (isRunning) {
-                delButton?.isVisible = false
-                saveButton?.isVisible = false
-            }
-        } else {
-            delButton?.isVisible = false
-        }
+        val delButton = menu.findItem(R.id.del_config)
+        delButton?.isVisible = editGuid.isNotEmpty() && !isRunning
 
         return super.onCreateOptionsMenu(menu)
     }
