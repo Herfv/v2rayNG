@@ -344,19 +344,19 @@ data class V2rayConfig(
             if (protocol.equals(EConfigType.VMESS.name, true)
                 || protocol.equals(EConfigType.VLESS.name, true)
             ) {
-                return settings?.vnext?.first()?.address
+                return settings?.vnext?.firstOrNull()?.address ?: settings?.address as? String
             } else if (protocol.equals(EConfigType.SHADOWSOCKS.name, true)
                 || protocol.equals(EConfigType.SOCKS.name, true)
                 || protocol.equals(EConfigType.HTTP.name, true)
                 || protocol.equals(EConfigType.TROJAN.name, true)
             ) {
-                return settings?.servers?.first()?.address
+                return settings?.servers?.firstOrNull()?.address
             } else if (protocol.equals(EConfigType.WIREGUARD.name, true)) {
-                return settings?.peers?.first()?.endpoint?.substringBeforeLast(":")
+                return settings?.peers?.firstOrNull()?.endpoint?.substringBeforeLast(":")
             } else if (protocol.equals(EConfigType.HYSTERIA2.name, true)
                 || protocol.equals(EConfigType.HYSTERIA.name, true)
             ) {
-                return settings?.address as String?
+                return settings?.address as? String
             }
             return null
         }
@@ -365,15 +365,15 @@ data class V2rayConfig(
             if (protocol.equals(EConfigType.VMESS.name, true)
                 || protocol.equals(EConfigType.VLESS.name, true)
             ) {
-                return settings?.vnext?.first()?.port
+                return settings?.vnext?.firstOrNull()?.port ?: settings?.port
             } else if (protocol.equals(EConfigType.SHADOWSOCKS.name, true)
                 || protocol.equals(EConfigType.SOCKS.name, true)
                 || protocol.equals(EConfigType.HTTP.name, true)
                 || protocol.equals(EConfigType.TROJAN.name, true)
             ) {
-                return settings?.servers?.first()?.port
+                return settings?.servers?.firstOrNull()?.port
             } else if (protocol.equals(EConfigType.WIREGUARD.name, true)) {
-                return settings?.peers?.first()?.endpoint?.substringAfterLast(":")?.toInt()
+                return settings?.peers?.firstOrNull()?.endpoint?.substringAfterLast(":")?.toInt()
             } else if (protocol.equals(EConfigType.HYSTERIA2.name, true)
                 || protocol.equals(EConfigType.HYSTERIA.name, true)
             ) {
