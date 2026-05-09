@@ -15,11 +15,11 @@ import com.v2ray.ang.dto.ProfileItem
 import com.v2ray.ang.enums.EConfigType
 import com.v2ray.ang.extension.toast
 import com.v2ray.ang.extension.toastSuccess
-import com.v2ray.ang.helper.SimpleItemTouchHelperCallback
 import com.v2ray.ang.handler.MmkvManager
-import com.v2ray.ang.handler.SettingsManager
-import com.v2ray.ang.util.Utils
 import com.v2ray.ang.handler.SettingsChangeManager
+import com.v2ray.ang.handler.SettingsManager
+import com.v2ray.ang.helper.SimpleItemTouchHelperCallback
+import com.v2ray.ang.util.Utils
 
 class ServerProxyChainActivity : BaseActivity() {
     private val binding by lazy { ActivityServerProxyChainBinding.inflate(layoutInflater) }

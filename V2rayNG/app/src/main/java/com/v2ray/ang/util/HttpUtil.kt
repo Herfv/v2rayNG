@@ -3,6 +3,9 @@ package com.v2ray.ang.util
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.AppConfig.LOOPBACK
 import com.v2ray.ang.BuildConfig
+import okhttp3.Credentials
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.io.File
 import java.io.IOException
 import java.net.IDN
@@ -14,9 +17,6 @@ import java.net.Proxy
 import java.net.URI
 import java.net.URL
 import java.util.concurrent.TimeUnit
-import okhttp3.Credentials
-import okhttp3.OkHttpClient
-import okhttp3.Request
 
 object HttpUtil {
 

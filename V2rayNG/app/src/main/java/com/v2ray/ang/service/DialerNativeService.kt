@@ -23,14 +23,13 @@ import okio.ByteString.Companion.toByteString
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.EOFException
-import java.net.URI
 import java.net.SocketException
+import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
-import kotlin.io.DEFAULT_BUFFER_SIZE
 
 // This class is responsible for forwarding xray's HTTP/WS requests through okhttp,
 // so that its TLS and traffic characteristics are okhttp instead of golang/utls.
@@ -66,6 +65,7 @@ class DialerNativeService : IDialerService {
 
     @Volatile
     private var serviceJob = SupervisorJob()
+
     @Volatile
     private var scope = CoroutineScope(serviceJob + Dispatchers.IO)
     private val running = AtomicBoolean(false)
@@ -97,7 +97,8 @@ class DialerNativeService : IDialerService {
         loopJob = scope.launch {
             val resolvedControlUrl = resolveControlWsUrl(dialerAddr, nativeClient)
             if (resolvedControlUrl == null) {
-                debug("BrowserDialer: failed to resolve control url from dialer endpoint: $dialerAddr"
+                debug(
+                    "BrowserDialer: failed to resolve control url from dialer endpoint: $dialerAddr"
                 )
                 running.set(false)
                 return@launch
@@ -276,14 +277,16 @@ class DialerNativeService : IDialerService {
             val status = response?.code?.toString() ?: "no-http-response"
             val stateText = "${poolState()} accepted=${taskAccepted.get()} closed=${closed.get()}"
             if (isExpectedControlFailure(t, status)) {
-                debug("BrowserDialer: control socket closed socketId=$socketId url=$controlUrl status=$status cause=${t.javaClass.simpleName} $stateText"
+                debug(
+                    "BrowserDialer: control socket closed socketId=$socketId url=$controlUrl status=$status cause=${t.javaClass.simpleName} $stateText"
                 )
                 debug(
                     "BrowserDialer: control socket failure detail socketId=$socketId url=$controlUrl status=$status $stateText",
                     t
                 )
             } else {
-                debug("BrowserDialer: control socket failure socketId=$socketId url=$controlUrl status=$status $stateText",
+                debug(
+                    "BrowserDialer: control socket failure socketId=$socketId url=$controlUrl status=$status $stateText",
                     t
                 )
             }
@@ -386,7 +389,8 @@ class DialerNativeService : IDialerService {
                         try {
                             controlSocket.send("ok")
                         } catch (e: Exception) {
-                            debug("BrowserDialer: failed to send ok for WS task",
+                            debug(
+                                "BrowserDialer: failed to send ok for WS task",
                                 e
                             )
                             webSocket.close(1000, "control failed")
@@ -397,7 +401,8 @@ class DialerNativeService : IDialerService {
                         try {
                             controlSocket.send(text)
                         } catch (e: Exception) {
-                            debug("BrowserDialer: control socket closed during WS message transfer socketId=$socketId",
+                            debug(
+                                "BrowserDialer: control socket closed during WS message transfer socketId=$socketId",
                                 e
                             )
                             webSocket.close(1000, "control closed")
@@ -408,7 +413,8 @@ class DialerNativeService : IDialerService {
                         try {
                             controlSocket.send(bytes)
                         } catch (e: Exception) {
-                            debug("BrowserDialer: control socket closed during WS binary transfer socketId=$socketId",
+                            debug(
+                                "BrowserDialer: control socket closed during WS binary transfer socketId=$socketId",
                                 e
                             )
                             webSocket.close(1000, "control closed")
@@ -432,7 +438,8 @@ class DialerNativeService : IDialerService {
                             try {
                                 controlSocket.send("fail")
                             } catch (e: Exception) {
-                                debug("BrowserDialer: control socket send failed socketId=$socketId",
+                                debug(
+                                    "BrowserDialer: control socket send failed socketId=$socketId",
                                     e
                                 )
                             }
@@ -440,7 +447,8 @@ class DialerNativeService : IDialerService {
                         try {
                             controlSocket.close(1011, "upstream failure")
                         } catch (_: Exception) {
-                            debug("BrowserDialer: control socket already closed socketId=$socketId"
+                            debug(
+                                "BrowserDialer: control socket already closed socketId=$socketId"
                             )
                         }
                     }
@@ -450,7 +458,8 @@ class DialerNativeService : IDialerService {
                 try {
                     upstreamSocket?.send(message)
                 } catch (e: Exception) {
-                    debug("BrowserDialer: upstream socket send failed socketId=$socketId",
+                    debug(
+                        "BrowserDialer: upstream socket send failed socketId=$socketId",
                         e
                     )
                 }
@@ -459,7 +468,8 @@ class DialerNativeService : IDialerService {
                 try {
                     upstreamSocket?.send(data.toByteString())
                 } catch (e: Exception) {
-                    debug("BrowserDialer: upstream socket binary send failed socketId=$socketId",
+                    debug(
+                        "BrowserDialer: upstream socket binary send failed socketId=$socketId",
                         e
                     )
                 }
@@ -477,7 +487,8 @@ class DialerNativeService : IDialerService {
             try {
                 controlSocket.send("ok")
             } catch (e: Exception) {
-                debug("BrowserDialer: failed to send ok for streaming GET socketId=$socketId",
+                debug(
+                    "BrowserDialer: failed to send ok for streaming GET socketId=$socketId",
                     e
                 )
                 return
@@ -499,7 +510,8 @@ class DialerNativeService : IDialerService {
                                 try {
                                     controlSocket.send(buffer.readByteString())
                                 } catch (e: Exception) {
-                                    debug("BrowserDialer: WebSocket send failed during streaming, stopping stream socketId=$socketId",
+                                    debug(
+                                        "BrowserDialer: WebSocket send failed during streaming, stopping stream socketId=$socketId",
                                         e
                                     )
                                     break
@@ -511,7 +523,8 @@ class DialerNativeService : IDialerService {
                         }
                     }
                 } catch (e: Exception) {
-                    debug("BrowserDialer: streaming GET failed socketId=$socketId",
+                    debug(
+                        "BrowserDialer: streaming GET failed socketId=$socketId",
                         e
                     )
                     try {
@@ -524,7 +537,8 @@ class DialerNativeService : IDialerService {
                     try {
                         controlSocket.close(1000, "streaming done")
                     } catch (_: Exception) {
-                        debug("BrowserDialer: WebSocket already closed socketId=$socketId"
+                        debug(
+                            "BrowserDialer: WebSocket already closed socketId=$socketId"
                         )
                     }
                 }
@@ -541,7 +555,8 @@ class DialerNativeService : IDialerService {
             try {
                 controlSocket.send("ok")
             } catch (e: Exception) {
-                debug("BrowserDialer: failed to send ok for unary task socketId=$socketId",
+                debug(
+                    "BrowserDialer: failed to send ok for unary task socketId=$socketId",
                     e
                 )
                 return
@@ -574,13 +589,15 @@ class DialerNativeService : IDialerService {
                                 try {
                                     controlSocket.send(if (response.isSuccessful) "ok" else "fail")
                                 } catch (e: Exception) {
-                                    debug("BrowserDialer: WebSocket send failed for unary response socketId=$socketId",
+                                    debug(
+                                        "BrowserDialer: WebSocket send failed for unary response socketId=$socketId",
                                         e
                                     )
                                 }
                             }
                         } catch (e: Exception) {
-                            debug("BrowserDialer: unary request failed socketId=$socketId",
+                            debug(
+                                "BrowserDialer: unary request failed socketId=$socketId",
                                 e
                             )
                             try {
@@ -593,7 +610,8 @@ class DialerNativeService : IDialerService {
                             try {
                                 controlSocket.close(1000, "request done")
                             } catch (_: Exception) {
-                                debug("BrowserDialer: WebSocket already closed socketId=$socketId"
+                                debug(
+                                    "BrowserDialer: WebSocket already closed socketId=$socketId"
                                 )
                             }
                         }

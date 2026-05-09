@@ -5,15 +5,15 @@ import android.content.Intent
 import android.os.IBinder
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
+import com.v2ray.ang.core.CoreNativeManager
 import com.v2ray.ang.dto.RealPingEvent
 import com.v2ray.ang.dto.TestServiceMessage
+import com.v2ray.ang.enums.NotificationChannelType
 import com.v2ray.ang.extension.serializable
 import com.v2ray.ang.handler.MmkvManager
-import com.v2ray.ang.core.CoreNativeManager
 import com.v2ray.ang.util.LogUtil
 import com.v2ray.ang.util.MessageUtil
 import com.v2ray.ang.util.NotificationHelper
-import com.v2ray.ang.enums.NotificationChannelType
 import java.util.Collections
 
 class CoreTestService : Service() {
@@ -68,7 +68,9 @@ class CoreTestService : Service() {
         when (message.key) {
             AppConfig.MSG_MEASURE_CONFIG_START -> handleMeasureStart(message, startId)
             AppConfig.MSG_MEASURE_CONFIG_CANCEL -> handleMeasureCancel()
-            else -> { NotificationHelper.stopForeground(this); stopSelf(startId) }
+            else -> {
+                NotificationHelper.stopForeground(this); stopSelf(startId)
+            }
         }
         return START_NOT_STICKY
     }
@@ -94,7 +96,7 @@ class CoreTestService : Service() {
             worker = RealPingWorkerService(
                 context = this,
                 guids = guidsList,
-                onEvent = { event -> handleWorkerEvent(event) { activeWorkers.remove(worker) }  }
+                onEvent = { event -> handleWorkerEvent(event) { activeWorkers.remove(worker) } }
             )
             activeWorkers.add(worker)
             worker.start()
@@ -114,10 +116,12 @@ class CoreTestService : Service() {
                 )
                 MessageUtil.sendMsg2UI(this, AppConfig.MSG_MEASURE_CONFIG_NOTIFY, event.text)
             }
+
             is RealPingEvent.Result -> {
                 MmkvManager.encodeServerTestDelayMillis(event.guid, event.delayMillis)
                 MessageUtil.sendMsg2UI(this, AppConfig.MSG_MEASURE_CONFIG_SUCCESS, event.guid)
             }
+
             is RealPingEvent.Finish -> {
                 MessageUtil.sendMsg2UI(this, AppConfig.MSG_MEASURE_CONFIG_FINISH, event.status)
                 onWorkerDone()

@@ -1,10 +1,10 @@
 package com.v2ray.ang.service
 
 import android.content.Context
+import com.v2ray.ang.core.CoreConfigManager
+import com.v2ray.ang.core.CoreNativeManager
 import com.v2ray.ang.dto.RealPingEvent
 import com.v2ray.ang.handler.SettingsManager
-import com.v2ray.ang.core.CoreNativeManager
-import com.v2ray.ang.core.CoreConfigManager
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope

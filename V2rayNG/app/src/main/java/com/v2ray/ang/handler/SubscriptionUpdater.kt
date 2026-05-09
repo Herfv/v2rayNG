@@ -14,9 +14,9 @@ import com.v2ray.ang.AngApplication
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
 import com.v2ray.ang.dto.SubscriptionCache
+import com.v2ray.ang.enums.NotificationChannelType
 import com.v2ray.ang.util.LogUtil
 import com.v2ray.ang.util.NotificationHelper
-import com.v2ray.ang.enums.NotificationChannelType
 import java.util.concurrent.TimeUnit
 
 object SubscriptionUpdater {

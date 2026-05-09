@@ -17,9 +17,9 @@ import com.v2ray.ang.extension.toastSuccess
 import com.v2ray.ang.fmt.CustomFmt
 import com.v2ray.ang.handler.AngConfigManager
 import com.v2ray.ang.handler.MmkvManager
+import com.v2ray.ang.handler.SettingsChangeManager
 import com.v2ray.ang.util.LogUtil
 import com.v2ray.ang.util.Utils
-import com.v2ray.ang.handler.SettingsChangeManager
 
 class ServerCustomConfigActivity : BaseActivity() {
     private val binding by lazy { ActivityServerCustomConfigBinding.inflate(layoutInflater) }

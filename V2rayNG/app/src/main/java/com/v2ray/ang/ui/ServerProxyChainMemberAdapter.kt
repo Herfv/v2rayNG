@@ -1,10 +1,10 @@
 package com.v2ray.ang.ui
 
 import android.graphics.Color
-import android.widget.ArrayAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.v2ray.ang.contracts.BaseAdapterListener
 import com.v2ray.ang.databinding.ItemRecyclerProxyChainMemberBinding

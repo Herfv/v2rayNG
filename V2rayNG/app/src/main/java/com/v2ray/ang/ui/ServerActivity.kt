@@ -29,9 +29,9 @@ import com.v2ray.ang.extension.toast
 import com.v2ray.ang.extension.toastSuccess
 import com.v2ray.ang.handler.AngConfigManager
 import com.v2ray.ang.handler.MmkvManager
+import com.v2ray.ang.handler.SettingsChangeManager
 import com.v2ray.ang.util.JsonUtil
 import com.v2ray.ang.util.Utils
-import com.v2ray.ang.handler.SettingsChangeManager
 
 class ServerActivity : BaseActivity() {
 
@@ -598,8 +598,7 @@ class ServerActivity : BaseActivity() {
             } else {
                 profileItem.browserDialerMode = null
             }
-        }
-        else {
+        } else {
             profileItem.browserDialerMode = null
         }
     }
