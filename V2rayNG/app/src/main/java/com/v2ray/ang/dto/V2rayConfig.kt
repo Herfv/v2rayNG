@@ -181,7 +181,7 @@ data class V2rayConfig(
                             @SerializedName("Accept-Encoding")
                             val acceptEncoding: List<String>? = null,
                             val Connection: List<String>? = null,
-                            val Pragma: String? = null
+                            val Pragma: Any? = null
                         )
                     }
                 }
