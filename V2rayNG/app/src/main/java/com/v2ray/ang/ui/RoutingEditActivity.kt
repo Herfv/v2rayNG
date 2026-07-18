@@ -6,8 +6,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -198,6 +200,8 @@ fun RoutingEditScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .consumeWindowInsets(innerPadding)
+                .imePadding()
                 .verticalScroll(scrollState)
                 .verticalScrollbar(scrollState)
                 .padding(vertical = 8.dp)
@@ -243,7 +247,7 @@ fun RoutingEditScreen(
                             AppPickerActivity.createIntent(
                                 context = context,
                                 selectedPackages = current,
-                                title = context.getString(R.string.routing_settings_process)
+                                title = context.getString(R.string.routing_settings_process_select)
                             )
                         )
                     },
@@ -254,7 +258,7 @@ fun RoutingEditScreen(
                         contentDescription = null
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(stringResource(R.string.routing_settings_process))
+                    Text(stringResource(R.string.routing_settings_process_select))
                 }
             }
             FormTextField(
