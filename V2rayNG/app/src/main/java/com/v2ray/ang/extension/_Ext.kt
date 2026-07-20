@@ -9,16 +9,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
-import com.v2ray.ang.AngApplication
 import com.v2ray.ang.compose.AppSnackbarManager
 import com.v2ray.ang.compose.ToastType
 import com.v2ray.ang.enums.EConfigType
 import java.io.Serializable
 import java.net.URI
 import java.util.Locale
-
-val Context.v2RayApplication: AngApplication?
-    get() = applicationContext as? AngApplication
 
 private inline fun runOnMain(crossinline block: () -> Unit) {
     if (Looper.myLooper() == Looper.getMainLooper()) {

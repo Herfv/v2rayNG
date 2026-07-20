@@ -1,15 +1,18 @@
 package com.v2ray.ang.viewmodel
 
+import android.app.Application
+import com.v2ray.ang.R
 import com.v2ray.ang.dto.entities.SubscriptionCache
 import com.v2ray.ang.dto.entities.SubscriptionItem
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.handler.SettingsChangeManager
 import com.v2ray.ang.handler.SettingsManager
+import com.v2ray.ang.handler.SubscriptionUpdater
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class SubscriptionsViewModel : BaseViewModel() {
+class SubscriptionsViewModel(application: Application) : BaseViewModel(application) {
     private val subscriptions: MutableList<SubscriptionCache> =
         MmkvManager.decodeSubscriptions().toMutableList()
 
@@ -51,5 +54,12 @@ class SubscriptionsViewModel : BaseViewModel() {
             SettingsChangeManager.makeSetupGroupTab()
             _subsFlow.value = subscriptions.toList()
         }
+    }
+
+    fun updateSubscriptions() {
+        SettingsChangeManager.makeSetupGroupTab()
+        SubscriptionUpdater.updateAllByManual(app)
+
+        toast(R.string.subscription_updater_job_tips)
     }
 }

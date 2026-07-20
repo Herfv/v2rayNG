@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,8 +24,8 @@ import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,7 +38,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
 import com.v2ray.ang.compose.AppDivider
@@ -46,24 +46,20 @@ import com.v2ray.ang.compose.ConfirmDialog
 import com.v2ray.ang.compose.SelectListDialog
 import com.v2ray.ang.compose.QRCodeDialog
 import com.v2ray.ang.compose.ReorderableListItem
+import com.v2ray.ang.compose.SettingsSwitchItem
 import com.v2ray.ang.compose.colorFabActive
 import com.v2ray.ang.compose.verticalScrollbar
 import com.v2ray.ang.extension.toast
-import com.v2ray.ang.handler.AngConfigManager
 import com.v2ray.ang.handler.MmkvManager
+import com.v2ray.ang.handler.MmkvManager.rememberMmkvBool
 import com.v2ray.ang.util.QRCodeDecoder
 import com.v2ray.ang.util.Utils
 import com.v2ray.ang.viewmodel.SubscriptionsViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
 class SubSettingActivity : BaseComponentActivity() {
     private val viewModel: SubscriptionsViewModel by viewModels()
-    private val isLoadingState = MutableStateFlow(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,12 +67,13 @@ class SubSettingActivity : BaseComponentActivity() {
 
     @Composable
     override fun ScreenContent() {
+        val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
         SubSettingScreen(
             viewModel = viewModel,
-            isLoadingState = isLoadingState,
+            isLoading = isLoading,
             onBackClick = { finish() },
             onAddClick = { startActivity(Intent(this, SubEditActivity::class.java)) },
-            onSubUpdate = { updateSubscriptions() },
+            onSubUpdate = { viewModel.updateSubscriptions() },
             onEditSub = { subId ->
                 startActivity(Intent(this, SubEditActivity::class.java).putExtra("subId", subId))
             },
@@ -98,37 +95,13 @@ class SubSettingActivity : BaseComponentActivity() {
     private fun removeSub(subId: String) {
         viewModel.remove(subId)
     }
-
-    private fun updateSubscriptions() {
-        isLoadingState.value = true
-        lifecycleScope.launch(Dispatchers.IO) {
-            val result = AngConfigManager.updateConfigViaSubAll()
-            delay(500L)
-            launch(Dispatchers.Main) {
-                if (result.successCount + result.failureCount + result.skipCount == 0) {
-                    toast(R.string.title_update_subscription_no_subscription)
-                } else if (result.successCount > 0 && result.failureCount + result.skipCount == 0) {
-                    toast(getString(R.string.title_update_config_count, result.configCount))
-                } else {
-                    toast(
-                        getString(
-                            R.string.title_update_subscription_result,
-                            result.configCount, result.successCount, result.failureCount, result.skipCount
-                        )
-                    )
-                }
-                isLoadingState.value = false
-                viewModel.reload()
-            }
-        }
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SubSettingScreen(
     viewModel: SubscriptionsViewModel,
-    isLoadingState: MutableStateFlow<Boolean>,
+    isLoading: Boolean,
     onBackClick: () -> Unit,
     onAddClick: () -> Unit,
     onSubUpdate: () -> Unit,
@@ -139,7 +112,7 @@ fun SubSettingScreen(
     shareSubMethodEntries: List<String>
 ) {
     val subscriptions by viewModel.subsFlow.collectAsStateWithLifecycle()
-    val isLoading by isLoadingState.collectAsState()
+    var showUpdateDialog by remember { mutableStateOf(false) }
     var removeTarget by remember { mutableStateOf<String?>(null) }
     val confirmRemove = MmkvManager.decodeSettingsBool(AppConfig.PREF_CONFIRM_REMOVE, false)
 
@@ -162,7 +135,7 @@ fun SubSettingScreen(
                     IconButton(onClick = onAddClick) {
                         Icon(painterResource(R.drawable.ic_add_24dp), contentDescription = stringResource(R.string.menu_item_add_config))
                     }
-                    IconButton(onClick = onSubUpdate) {
+                    IconButton(onClick = { showUpdateDialog = true }) {
                         Icon(painterResource(R.drawable.ic_restore_24dp), contentDescription = stringResource(R.string.title_sub_update))
                     }
                 }
@@ -309,6 +282,53 @@ fun SubSettingScreen(
                 removeTarget = null
             },
             onDismiss = { removeTarget = null }
+        )
+    }
+
+    if (showUpdateDialog) {
+
+        var autoTestAfterUpdateSubscription by rememberMmkvBool(AppConfig.PREF_AUTO_TEST_AFTER_UPDATE_SUBSCRIPTION, false)
+        var autoRemoveInvalidAfterTest by rememberMmkvBool(AppConfig.PREF_AUTO_REMOVE_INVALID_AFTER_TEST, false)
+        var autoSortAfterTest by rememberMmkvBool(AppConfig.PREF_AUTO_SORT_AFTER_TEST, false)
+
+        AlertDialog(
+            onDismissRequest = { showUpdateDialog = false },
+            title = { Text(text = stringResource(R.string.title_sub_update)) },
+            text = {
+                Column {
+                    SettingsSwitchItem(
+                        title = stringResource(R.string.title_pref_auto_test_after_update_subscription),
+                        summary = stringResource(R.string.summary_pref_auto_test_after_update_subscription),
+                        checked = autoTestAfterUpdateSubscription,
+                        onCheckedChange = { autoTestAfterUpdateSubscription = it }
+                    )
+                    SettingsSwitchItem(
+                        title = stringResource(R.string.title_pref_auto_remove_invalid_after_test),
+                        summary = stringResource(R.string.summary_pref_auto_remove_invalid_after_test),
+                        checked = autoRemoveInvalidAfterTest,
+                        onCheckedChange = { autoRemoveInvalidAfterTest = it }
+                    )
+                    SettingsSwitchItem(
+                        title = stringResource(R.string.title_pref_auto_sort_after_test),
+                        summary = stringResource(R.string.summary_pref_auto_sort_after_test),
+                        checked = autoSortAfterTest,
+                        onCheckedChange = { autoSortAfterTest = it }
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    showUpdateDialog = false
+                    onSubUpdate()
+                }) {
+                    Text(text = stringResource(android.R.string.ok))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showUpdateDialog = false }) {
+                    Text(text = stringResource(android.R.string.cancel))
+                }
+            }
         )
     }
 }
