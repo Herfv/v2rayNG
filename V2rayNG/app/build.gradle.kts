@@ -144,6 +144,21 @@ android {
         compose = true
     }
 
+    androidResources {
+        generateLocaleConfig = true
+        localeFilters += listOf(
+            "en",
+            "zh-rCN",
+            "zh-rTW",
+            "vi",
+            "ru",
+            "fa",
+            "ar",
+            "bn",
+            "bqi-rIR"
+        )
+    }
+
     packaging {
         jniLibs {
             useLegacyPackaging = true
@@ -158,6 +173,7 @@ dependencies {
 
     // AndroidX Core Libraries
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
 
     // Compose Libraries
     implementation(platform(libs.androidx.compose.bom))
